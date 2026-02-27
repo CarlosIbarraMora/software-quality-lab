@@ -1,9 +1,7 @@
 package mx.edu.cetys.validators;
 
-
-import Validators.EmailValidatorService;
+import mx.edu.cetys.validators.Validators.EmailValidatorService;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EmailValidatorServiceTest {
@@ -14,10 +12,38 @@ public class EmailValidatorServiceTest {
         //Arrange
         EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
-        var isValid = emailValidator.isValid("carlos4gmal#.com");
-
+        var isValid = emailValidator.isValid("carlos4#gmal.com");
         //Assert
         assertTrue(isValid);
+    }
+
+    //Check if there is a # present but there are missing parts
+    @Test
+    void shouldReturnFalseWhenSeparatedButFirstPartMissing(){
+        //Arrange
+        EmailValidatorService emailValidator = new EmailValidatorService();
+        //Act
+        var isValid = emailValidator.isValid("#gmal.com");
+        //Assert
+        assertFalse(isValid);
+    }
+    @Test
+    void shouldReturnFalseWhenSeparatedButSecondPartMissing(){
+        //Arrange
+        EmailValidatorService emailValidator = new EmailValidatorService();
+        //Act
+        var isValid = emailValidator.isValid("carlos4#");
+        //Assert
+        assertFalse(isValid);
+    }
+    @Test
+    void shouldReturnFalseWhenSeparatedButBothPartMissing(){
+        //Arrange
+        EmailValidatorService emailValidator = new EmailValidatorService();
+        //Act
+        var isValid = emailValidator.isValid("#");
+        //Assert
+        assertFalse(isValid);
     }
 
     @Test
@@ -26,7 +52,6 @@ public class EmailValidatorServiceTest {
         EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid(null);
-
         //Assert
         assertFalse(isValid);
     }
@@ -80,6 +105,8 @@ public class EmailValidatorServiceTest {
         //Assert
         assertFalse(isValid);
     }
+
+
     //No diphthong in the whole email
     @Test
     void shouldReturnFalseWhenDiphthongIsPresent(){
@@ -97,10 +124,21 @@ public class EmailValidatorServiceTest {
         EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4#gmal.comasi");
-
         //Assert
         assertFalse(isValid);
     }
+
+    @Test
+    void shouldReturnFalseWhenDomainIsNotPresent(){
+        //Arrange
+        EmailValidatorService emailValidator = new EmailValidatorService();
+        //Act
+        var isValid = emailValidator.isValid("carlos4#gmal.");
+        //Assert
+        assertFalse(isValid);
+    }
+
+
     //Max email length: 47
     @Test
     void shouldReturnFalseWhenEmailLengthHigherThan47(){
@@ -108,7 +146,6 @@ public class EmailValidatorServiceTest {
         EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("cccccccccccccccccccccccccccccccccccccccccccccccccccccccarlos4#gmal.com");
-
         //Assert
         assertFalse(isValid);
     }
@@ -119,8 +156,8 @@ public class EmailValidatorServiceTest {
         EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos#gmal.com");
-
         //Assert
         assertFalse(isValid);
     }
+
 }

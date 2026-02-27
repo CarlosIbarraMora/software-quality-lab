@@ -1,4 +1,4 @@
-package Validators;
+package mx.edu.cetys.validators.Validators;
 
 public class EmailValidatorService {
 
@@ -10,8 +10,7 @@ public class EmailValidatorService {
         if (!validSeparation(email)) return false;
 
         String[] parts = email.split("#");
-        if(parts.length > 2 || parts.length < 1)return false;
-
+        if(parts[0].isEmpty() || parts[1].isEmpty()) return false;
         String user = parts[0];
         String domain = parts[1];
 
@@ -27,7 +26,7 @@ public class EmailValidatorService {
 
     //checks if email length no longer than 47
     private boolean validEmailLength(String email) {
-        return email.length() <= 47;
+        return email.length() <= 47 ;
     }
 
     //checks if domain length no longer than 5
@@ -47,6 +46,7 @@ public class EmailValidatorService {
         return domain.matches("^[a-z0-9.]+$");
     }
 
+    //Estan bien locas las expresiones regulares
     //Checks if in the whole email it doesn't contain one vowel after another
     private boolean validDiphthong(String user) {
         return !user.matches(".*[aeiou]{2}.*");
