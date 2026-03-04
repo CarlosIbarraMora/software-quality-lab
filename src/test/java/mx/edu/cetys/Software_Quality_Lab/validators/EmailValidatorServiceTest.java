@@ -1,16 +1,20 @@
-package mx.edu.cetys.validators;
+package mx.edu.cetys.Software_Quality_Lab.validators;
 
-import mx.edu.cetys.validators.Validators.EmailValidatorService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EmailValidatorServiceTest {
-
+    private EmailValidatorService emailValidator;
+    //Assert
+    @BeforeEach
+    void BeforeEach() {
+        //Arrange
+        emailValidator = new EmailValidatorService();
+    }
     //Base case: valid email
     @Test
     void shouldReturnTrueWhenEmailIsValid() {
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4#gmal.com");
         //Assert
@@ -20,8 +24,6 @@ public class EmailValidatorServiceTest {
     //Check if there is a # present but there are missing parts
     @Test
     void shouldReturnFalseWhenSeparatedButFirstPartMissing(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("#gmal.com");
         //Assert
@@ -29,8 +31,6 @@ public class EmailValidatorServiceTest {
     }
     @Test
     void shouldReturnFalseWhenSeparatedButSecondPartMissing(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4#");
         //Assert
@@ -38,8 +38,6 @@ public class EmailValidatorServiceTest {
     }
     @Test
     void shouldReturnFalseWhenSeparatedButBothPartMissing(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("#");
         //Assert
@@ -48,8 +46,6 @@ public class EmailValidatorServiceTest {
 
     @Test
     void shouldReturnFalseWhenEmailIsNull(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid(null);
         //Assert
@@ -58,8 +54,6 @@ public class EmailValidatorServiceTest {
 
     @Test
     void shouldReturnFalseWhenEmailIsEmpty(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("");
         //Assert
@@ -68,8 +62,6 @@ public class EmailValidatorServiceTest {
     // Characters allowed 1-0, a-z
     @Test
     void shouldReturnFalseWhenInvalidCharactersGeneral(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4&#gmal.com");
         //Assert
@@ -78,8 +70,6 @@ public class EmailValidatorServiceTest {
     //Special characters allowed user: .-_+
     @Test
     void shouldReturnFalseWhenInvalidUserCharacters(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4!#gmal.com");
         //Assert
@@ -88,8 +78,6 @@ public class EmailValidatorServiceTest {
     //Special characters allowed(provider, domain): .
     @Test
     void shouldReturnFalseWhenDomainCharactersAreInvalid(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4#gmal^.com");
         //Assert
@@ -98,8 +86,6 @@ public class EmailValidatorServiceTest {
     //Use # to separate user-provider
     @Test
     void shouldReturnFalseWhenSeparationCharacterIsInvalid(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4@gmal.com");
         //Assert
@@ -110,8 +96,6 @@ public class EmailValidatorServiceTest {
     //No diphthong in the whole email
     @Test
     void shouldReturnFalseWhenDiphthongIsPresent(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4#gmail.com");
         //Assert
@@ -120,8 +104,6 @@ public class EmailValidatorServiceTest {
     // Max Domain length: 5
     @Test
     void shouldReturnFalseWhenDomainLengthHigherThan5(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4#gmal.comasi");
         //Assert
@@ -130,20 +112,15 @@ public class EmailValidatorServiceTest {
 
     @Test
     void shouldReturnFalseWhenDomainIsNotPresent(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos4#gmal.");
         //Assert
         assertFalse(isValid);
     }
 
-
     //Max email length: 47
     @Test
     void shouldReturnFalseWhenEmailLengthHigherThan47(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("cccccccccccccccccccccccccccccccccccccccccccccccccccccccarlos4#gmal.com");
         //Assert
@@ -152,8 +129,6 @@ public class EmailValidatorServiceTest {
     //Mandatory, include 4 in email
     @Test
     void shouldReturnFalseWhen4IsNotPresent(){
-        //Arrange
-        EmailValidatorService emailValidator = new EmailValidatorService();
         //Act
         var isValid = emailValidator.isValid("carlos#gmal.com");
         //Assert
