@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 
 import java.util.logging.Logger;
 
+@DisplayName("Lifecycle and display Name annotations")
 public class LifeCycleTest {
     private static final Logger LOGGER =  Logger.getLogger(LifeCycleTest.class.getName());
 
@@ -25,10 +26,12 @@ public class LifeCycleTest {
         LOGGER.info("After Each Test");
     }
     @Test
+    @DisplayName("Test 1")
     void test1(){
         LOGGER.info("This is a test 1");
     }
     @Test
+    @DisplayName("Test 2")
     void test2(){
         LOGGER.info("This is a test 2");
     }
