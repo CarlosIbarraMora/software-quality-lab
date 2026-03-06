@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Email validator Service Test")
 public class EmailValidatorServiceTest {
     private EmailValidatorService emailValidator;
-    //Assert
+
     @BeforeEach
     @DisplayName("Initial setup")
     void BeforeEach() {
@@ -24,7 +24,6 @@ public class EmailValidatorServiceTest {
         //Assert
         assertTrue(isValid);
     }
-
     //Check if there is a # present but there are missing parts
     @Test
     @DisplayName("Should return false when user is missing")
@@ -50,7 +49,6 @@ public class EmailValidatorServiceTest {
         //Assert
         assertFalse(isValid);
     }
-
     @Test
     @DisplayName("Should return false when email is null")
     void shouldReturnFalseWhenEmailIsNull(){
@@ -59,7 +57,6 @@ public class EmailValidatorServiceTest {
         //Assert
         assertFalse(isValid);
     }
-
     @Test
     @DisplayName("Should return false when email is empty")
     void shouldReturnFalseWhenEmailIsEmpty(){
@@ -122,7 +119,6 @@ public class EmailValidatorServiceTest {
         //Assert
         assertFalse(isValid);
     }
-
     @Test
     @DisplayName("Should return false when domain not present")
     void shouldReturnFalseWhenDomainIsNotPresent(){
@@ -131,7 +127,6 @@ public class EmailValidatorServiceTest {
         //Assert
         assertFalse(isValid);
     }
-
     //Max email length: 47
     @Test
     @DisplayName("Should return false when general character count > 47")
@@ -150,5 +145,4 @@ public class EmailValidatorServiceTest {
         //Assert
         assertFalse(isValid);
     }
-
 }
