@@ -1,11 +1,9 @@
 package mx.edu.cetys.Software_Quality_Lab.poc;
 
-import mx.edu.cetys.Software_Quality_Lab.validators.EmailValidatorService;
-import org.junit.jupiter.api.BeforeEach;
+import mx.edu.mx.Software_Quality_Lab.validators.EmailValidatorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;

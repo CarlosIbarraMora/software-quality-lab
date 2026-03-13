@@ -1,4 +1,4 @@
-package mx.edu.cetys.Software_Quality_Lab.validators;
+package mx.edu.mx.Software_Quality_Lab.validators;
 
 public class EmailValidatorService {
 

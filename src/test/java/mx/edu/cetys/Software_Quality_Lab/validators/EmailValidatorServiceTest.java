@@ -3,6 +3,8 @@ package mx.edu.cetys.Software_Quality_Lab.validators;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import mx.edu.mx.Software_Quality_Lab.validators.EmailValidatorService;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Email validator Service Test")
