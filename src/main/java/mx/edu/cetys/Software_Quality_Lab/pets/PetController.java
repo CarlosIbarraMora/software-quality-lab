@@ -1,5 +1,6 @@
 package mx.edu.cetys.Software_Quality_Lab.pets;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +28,7 @@ public class PetController {
     record PetRequest(String name, String color, String race, Integer age){}
 
     record PetResponse(Long id, String name, String color, String race, Integer age){}
+    record PetWrapper(PetResponse pet){}
 
     // Response generic wrapper to include standard info in all our API
     record ApiResponse<T>(String info, T response, String error){}
@@ -37,7 +39,20 @@ public class PetController {
     }
 
     @PostMapping
-    ApiResponse<PetResponse> createPet(@RequestBody PetController.PetRequest requestPet){
-        return petService.savePet(requestPet);
+    @ResponseStatus(HttpStatus.CREATED)
+    ApiResponse<PetWrapper> createPet(@RequestBody PetController.PetRequest requestPet){
+        return new ApiResponse<>("pet saved",
+                new PetWrapper(petService.savePet(requestPet).response()),
+                null );
     }
+
+//    @GetMapping
+//    ApiResponse<PetResponse> getAllPets(){
+//        return petService.getAll();
+//    }
+
+//    @GetMapping("/{id}")
+//    ApiResponse<PetResponse> getPetById(@PathVariable Long id){
+//        return petService.getPetById(id);
+//    }
 }

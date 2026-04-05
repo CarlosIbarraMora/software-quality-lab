@@ -68,4 +68,11 @@ public class PetService {
                 responsePet,
                 null);
     }
+//    PetController.ApiResponse<PetController.PetResponse> getAll(){
+//        var petResponse =  petRepository.findAll();
+//        return new PetController.ApiResponse<>(
+//                "All pets",
+//                petResponse,
+//                null);
+//    }
 }
