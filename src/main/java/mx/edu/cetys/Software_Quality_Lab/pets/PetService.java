@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PetService {
 
@@ -68,11 +70,22 @@ public class PetService {
                 responsePet,
                 null);
     }
-//    PetController.ApiResponse<PetController.PetResponse> getAll(){
-//        var petResponse =  petRepository.findAll();
-//        return new PetController.ApiResponse<>(
-//                "All pets",
-//                petResponse,
-//                null);
-//    }
+    PetController.ApiResponse<List<PetController.PetWrapper>> getAllPets(){
+            var pets = petRepository.findAll();
+
+            var response = pets.stream()
+                    .map(p -> new PetController.PetResponse(
+                            p.getId(),
+                            p.getName(),
+                            p.getColor(),
+                            p.getRace(),
+                            p.getAge()
+                    ))
+                    .toList();
+
+            var wrappedResponse = response.stream()
+                    .map(PetController.PetWrapper::new).toList();
+
+            return new PetController.ApiResponse<>("Pet list", wrappedResponse, null);
+    }
 }

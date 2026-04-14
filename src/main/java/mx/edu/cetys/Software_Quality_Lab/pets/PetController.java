@@ -3,6 +3,8 @@ package mx.edu.cetys.Software_Quality_Lab.pets;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/pets")  //localhost:8080/pets
 public class PetController {
@@ -46,10 +48,11 @@ public class PetController {
                 null );
     }
 
-//    @GetMapping
-//    ApiResponse<PetResponse> getAllPets(){
-//        return petService.getAll();
-//    }
+       @GetMapping
+       @ResponseStatus(HttpStatus.OK)
+       ApiResponse<List<PetWrapper>> getAllPets(){
+           return petService.getAllPets();
+       }
 
 //    @GetMapping("/{id}")
 //    ApiResponse<PetResponse> getPetById(@PathVariable Long id){
