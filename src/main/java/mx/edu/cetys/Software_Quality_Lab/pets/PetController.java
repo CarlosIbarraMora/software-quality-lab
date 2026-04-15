@@ -48,9 +48,9 @@ public class PetController {
                 null );
     }
 
-       @GetMapping
-       @ResponseStatus(HttpStatus.OK)
-       ApiResponse<List<PetWrapper>> getAllPets(){
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    ApiResponse<List<PetWrapper>> getAllPets(){
            return petService.getAllPets();
        }
 

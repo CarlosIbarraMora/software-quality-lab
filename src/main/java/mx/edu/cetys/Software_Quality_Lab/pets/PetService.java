@@ -1,5 +1,6 @@
 package mx.edu.cetys.Software_Quality_Lab.pets;
 
+import mx.edu.cetys.Software_Quality_Lab.pets.exceptions.invalidPetDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,35 +22,22 @@ public class PetService {
 
     PetController.ApiResponse<PetController.PetResponse> savePet(PetController.PetRequest requestPet){
         logger.info("Saving Pet Request requestPet={}", requestPet);
-        //TODO validation
         //Age > 0
         if(requestPet.age() == null ||requestPet.age() <= 0){
-            return new PetController.ApiResponse<>(
-                    "Please enter a valid age (Age must be grater than 0)",
-                    null,
-                    "Invalid age error");
+            throw new  invalidPetDataException("Invalid age");
         }
         //Name length > 2
-        if(requestPet.name() == null || requestPet.name().length() <= 2){
-            return new PetController.ApiResponse<>(
-                    "Please enter a valid name (Name length must be greater than 2",
-                    null,
-                    "Invalid name error");
+        if(requestPet.name() == null
+                || requestPet.name().isBlank()
+                || requestPet.name().length() <= 2){
+            throw new invalidPetDataException("Name must be greater than or equal to 2");
         }
         //color not null
-        if(requestPet.color() == null){
-            return new PetController.ApiResponse<>(
-                    "Please enter a valid color",
-                    null,
-                    "Invalid color error"
-            );
+        if(requestPet.color() == null || requestPet.color().isBlank()){
+            throw new invalidPetDataException("Invalid color");
         }
-        if(requestPet.race() == null){
-            return new PetController.ApiResponse<>(
-                    "Please enter a valid race",
-                    null,
-                    "Invalid race error"
-            );
+        if(requestPet.race() == null || requestPet.race().isBlank()){
+            throw new invalidPetDataException("Invalid race");
         }
 
         var savedPet = petRepository.save(
