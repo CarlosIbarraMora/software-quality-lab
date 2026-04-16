@@ -1,12 +1,9 @@
 package mx.edu.cetys.Software_Quality_Lab.users;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-@Table(name="user")
+@Table(name="users")
 @Entity
 public class User {
     @Id
@@ -15,12 +12,18 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String firstName;
+    private String lastName;
+    private Boolean active;
 
-    public User(Long id, String username, String password, String email) {
+    public User(Long id, String username, String password, String email, String firstName, String lastName, Boolean active) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.active = active;
     }
 
     public User() {
@@ -56,5 +59,29 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 }

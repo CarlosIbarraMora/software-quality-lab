@@ -10,26 +10,17 @@ import java.util.List;
 public class PetController {
     //GET localhost:8080/pets --Todos los pets TODO: pagination
 
-    //GET localhost:8080/pets/{id} --ver pet por id
-
-    //POST  localhost:8080/pets --nuevo post - Request {json body}
-
-    //PUT  localhost:8080/pets/{id} --nuevo post - Actualizar pet por ID
-
-    //PATCH
-
-    //DELETE localhost:8080/{id}  //Flag available:y/n
-
     public final PetService petService;
 
-    public PetController(PetService petService, PetService petService1) {
+    public PetController(PetService petService1) {
         this.petService = petService1;
     }
 
     //DTOs (Data Transfer Object) for request and Response
     record PetRequest(String name, String color, String race, Integer age){}
-
-    record PetResponse(Long id, String name, String color, String race, Integer age){}
+    record PetUpdateRequest(String name, String color, String race, Integer age, Boolean available){}
+    record PetAvailabilityRequest(Boolean available) {}
+    record PetResponse(Long id, String name, String color, String race, Integer age, Boolean available){}
     record PetWrapper(PetResponse pet){}
 
     // Response generic wrapper to include standard info in all our API
@@ -54,8 +45,24 @@ public class PetController {
            return petService.getAllPets();
        }
 
-//    @GetMapping("/{id}")
-//    ApiResponse<PetResponse> getPetById(@PathVariable Long id){
-//        return petService.getPetById(id);
-//    }
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    ApiResponse<PetWrapper> getPetById(@PathVariable Long id){
+        return petService.getPetById(id);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    ApiResponse<PetWrapper> updatePetById(@PathVariable Long id, @RequestBody PetUpdateRequest requestPet){
+        return petService.updatePetById(id, requestPet);
+    }
+
+    // This is the delete, but we only change the availability to keep the record
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    ApiResponse<PetWrapper> patchPetAvailability(@PathVariable Long id, @RequestBody PetAvailabilityRequest requestPet) {
+        return petService.patchAvailability(id, requestPet);
+    }
+
+
 }

@@ -13,6 +13,7 @@ public class Pet{
     private String color;
     private String race;
     private Integer age;
+    private boolean available;
 
     public Pet(){
     }
@@ -23,6 +24,7 @@ public class Pet{
         this.color = color;
         this.race = race;
         this.age = age;
+        this.available = true;
     }
 
     public Pet(String name, String color, String race, Integer age) {
@@ -30,6 +32,7 @@ public class Pet{
         this.color = color;
         this.race = race;
         this.age = age;
+        this.available = true;
     }
 
     public Long getId() {
@@ -52,6 +55,8 @@ public class Pet{
         return age;
     }
 
+    public boolean isAvailable() { return available; }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -71,4 +76,9 @@ public class Pet{
     public void setAge(Integer age) {
         this.age = age;
     }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
 }
