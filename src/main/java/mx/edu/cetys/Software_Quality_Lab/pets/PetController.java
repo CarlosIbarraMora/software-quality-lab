@@ -2,6 +2,7 @@ package mx.edu.cetys.Software_Quality_Lab.pets;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import mx.edu.cetys.Software_Quality_Lab.common.*;
 
 import java.util.List;
 
@@ -22,9 +23,6 @@ public class PetController {
     record PetAvailabilityRequest(Boolean available) {}
     record PetResponse(Long id, String name, String color, String race, Integer age, Boolean available){}
     record PetWrapper(PetResponse pet){}
-
-    // Response generic wrapper to include standard info in all our API
-    record ApiResponse<T>(String info, T response, String error){}
 
     @GetMapping("/health")
     ApiResponse<PetResponse> health() {
@@ -57,7 +55,7 @@ public class PetController {
         return petService.updatePetById(id, requestPet);
     }
 
-    // This is the delete, but we only change the availability to keep the record
+    // This is to delete, but we only change the availability to keep the record
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     ApiResponse<PetWrapper> patchPetAvailability(@PathVariable Long id, @RequestBody PetAvailabilityRequest requestPet) {

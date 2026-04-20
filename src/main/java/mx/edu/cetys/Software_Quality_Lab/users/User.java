@@ -10,16 +10,25 @@ public class User {
     @GeneratedValue()
     private Long id;
     private String username;
-    private String password;
+    private String passwordHash;
     private String email;
     private String firstName;
     private String lastName;
     private Boolean active;
 
-    public User(Long id, String username, String password, String email, String firstName, String lastName, Boolean active) {
+    public User(Long id, String username, String passwordHash, String email, String firstName, String lastName, Boolean active) {
         this.id = id;
         this.username = username;
-        this.password = password;
+        this.passwordHash = passwordHash;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.active = active;
+    }
+
+    public User(String username, String passwordHash, String email, String firstName, String lastName, Boolean active) {
+        this.username = username;
+        this.passwordHash = passwordHash;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -37,8 +46,8 @@ public class User {
         return username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
     public String getEmail() {
@@ -53,8 +62,8 @@ public class User {
         this.username = username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String password) {
+        this.passwordHash = password;
     }
 
     public void setEmail(String email) {

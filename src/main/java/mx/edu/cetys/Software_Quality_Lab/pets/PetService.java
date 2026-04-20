@@ -1,10 +1,12 @@
 package mx.edu.cetys.Software_Quality_Lab.pets;
 
 import mx.edu.cetys.Software_Quality_Lab.pets.exceptions.petNotFoundException;
+import mx.edu.cetys.Software_Quality_Lab.common.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-    PetController.ApiResponse<PetController.PetResponse> savePet(PetController.PetRequest requestPet){
+   ApiResponse<PetController.PetResponse> savePet(PetController.PetRequest requestPet){
         logger.info("Saving Pet Request requestPet={}", requestPet);
 
         PetInfoValidator.isValid(requestPet);
@@ -40,12 +42,12 @@ public class PetService {
                 true
                 );
 
-        return new PetController.ApiResponse<>(
+        return new ApiResponse<>(
                 "Pet saved",
                 responsePet,
                 null);
     }
-    PetController.ApiResponse<List<PetController.PetWrapper>> getAllPets(){
+    ApiResponse<List<PetController.PetWrapper>> getAllPets(){
             var pets = petRepository.findAll();
 
             var response = pets.stream()
@@ -55,17 +57,17 @@ public class PetService {
             var wrappedResponse = response.stream()
                     .map(PetController.PetWrapper::new).toList();
 
-            return new PetController.ApiResponse<>("Pet list", wrappedResponse, null);
+            return new ApiResponse<>("Pet list", wrappedResponse, null);
     }
 
-    PetController.ApiResponse<PetController.PetWrapper> getPetById(@PathVariable Long id){
+    ApiResponse<PetController.PetWrapper> getPetById(@PathVariable Long id){
         var pet = petRepository.findById(id)
                                .orElseThrow(() -> new petNotFoundException("Pet was not found"));
 
-        return new PetController.ApiResponse<>("Pet info: ", new PetController.PetWrapper(mapToResponse(pet)), null);
+        return new ApiResponse<>("Pet info: ", new PetController.PetWrapper(mapToResponse(pet)), null);
     }
 
-    PetController.ApiResponse<PetController.PetWrapper> updatePetById(@PathVariable Long id, PetController.PetUpdateRequest requestPet){
+    ApiResponse<PetController.PetWrapper> updatePetById(@PathVariable Long id, PetController.PetUpdateRequest requestPet){
         var pet = petRepository.findById(id)
                 .orElseThrow(() -> new petNotFoundException("Pet was not found"));
 
@@ -79,13 +81,13 @@ public class PetService {
 
         var savedPet = petRepository.save(pet);
 
-        return new PetController.ApiResponse<>(
+        return new ApiResponse<>(
                 "Pet updated",
                 new PetController.PetWrapper(mapToResponse(savedPet)),
                 null
         );
     }
-    PetController.ApiResponse<PetController.PetWrapper> patchAvailability(Long id, PetController.PetAvailabilityRequest request) {
+    ApiResponse<PetController.PetWrapper> patchAvailability(Long id, PetController.PetAvailabilityRequest request) {
         var pet = petRepository.findById(id)
                 .orElseThrow(() -> new petNotFoundException("Pet with id=" + id + " was not found"));
 
@@ -95,7 +97,7 @@ public class PetService {
 
         var savedPet = petRepository.save(pet);
 
-        return new PetController.ApiResponse<>(
+        return new ApiResponse<>(
                 "Pet availability updated",
                 new PetController.PetWrapper(mapToResponse(savedPet)),
                 null

@@ -1,7 +1,10 @@
 package mx.edu.cetys.Software_Quality_Lab.users;
+import mx.edu.cetys.Software_Quality_Lab.common.*;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import mx.edu.cetys.Software_Quality_Lab.pets.PetController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/users")
@@ -13,14 +16,22 @@ public class UserController {
         this.userService = userService;
     }
 
-    private record UserRequest(String username, String password, String firstName, String lastName) {}
-    private record UserResponse(Long id, String username, String password, String firstName, String lastName, Boolean active) {}
+    record UserRequest(String username, String password, String email, String firstName, String lastName) {}
+    record UserResponse(Long id, String username, String firstName, String lastName, String email, Boolean active) {}
+    record UserWrapper(UserResponse user) {}
 
     //POST user
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    ApiResponse<UserWrapper> createUser(@RequestBody UserRequest userRequest) {
+        return userService.saveUser(userRequest);
+    }
 
     //GET user by id
 
     //GET all useres TODO pagination
+
+    //GET by username
 
     //UPDATE user info
 
