@@ -33,7 +33,7 @@ public class PetServiceTest {
 
     //safe pet request check
     @Test
-    void shouldReturnTrueWhenPetParamsAreCorrect() {
+    void shouldCreatePetWithCorrectValues() {
         //Arrange
         var request = new PetController.PetRequest("Frijol", "brown", "chihuahua", 2);
         //Act
@@ -43,6 +43,12 @@ public class PetServiceTest {
                 request.race(),
                 request.age());
         savedPet.setId(1L);
+
+        assertEquals("Frijol", savedPet.getName());
+        assertEquals("brown", savedPet.getColor());
+        assertEquals("chihuahua", savedPet.getRace());
+        assertEquals(2, savedPet.getAge());
+        assertEquals(1L, savedPet.getId());
     }
 
     @Test

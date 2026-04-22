@@ -16,6 +16,6 @@ public class UserControllerAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ApiResponse<Void> handlePetNotFoundException(userNotFoundException e) {
-        return new ApiResponse<>("User not found not found", null, e.getMessage());
+        return new ApiResponse<>("User not found", null, e.getMessage());
     }
 }
