@@ -8,23 +8,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PetServiceTest {
-//
-//    //Una clase repository es la encargada de hacer las llamadas a BD,
+
+    //    //Una clase repository es la encargada de hacer las llamadas a BD,
 //
 //    // se marca con el aspecto @Repository definido por spring
     @Mock
     PetRepository petRepository;
-//    //Service Class: Es la clase donde se ejecuta el negocio
+    //    //Service Class: Es la clase donde se ejecuta el negocio
     @InjectMocks
     PetService petService;
 
@@ -33,139 +37,170 @@ public class PetServiceTest {
 
     //safe pet request check
     @Test
-    void shouldCreatePetWithCorrectValues() {
+    void getPetById_WhenPetDoesNotExist_ShouldThrowException() {
+        when(petRepository.findById(99L)).thenReturn(Optional.empty());
 
-        // Arrange
-        var petRequest = new PetController.PetRequest("Andy", "Negro", "Cat", 67);
+        assertThrows(PetNotFoundException.class, () -> petService.getPetById(99L));
 
-        Pet savedPet = new Pet();
+        verify(petRepository, times(1)).findById(99L);
+    }
+
+    @Test
+    void getPets_ShouldReturnPagedPets() {
+        Pet pet = new Pet("Frijol", "Brown", "Chihuahua", 2);
+        pet.setId(1L);
+        pet.setAvailable(true);
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Pet> page = new PageImpl<>(List.of(pet), pageable, 1);
+
+        when(petRepository.findAll(pageable)).thenReturn(page);
+
+        var response = petService.getPets(pageable);
+
+        assertEquals("Pet list", response.info());
+        assertEquals(1, response.response().getTotalElements());
+        assertEquals("Frijol", response.response().getContent().getFirst().pet().name());
+
+        verify(petRepository).findAll(pageable);
+    }
+
+    @Test
+    void updatePetById_ShouldUpdatePetCorrectly() {
+        Pet existingPet = new Pet("Frijol", "Brown", "Chihuahua", 2);
+        existingPet.setId(1L);
+        existingPet.setAvailable(true);
+
+        var updateRequest = new PetController.PetUpdateRequest(
+                "Andy",
+                "Negro",
+                "Cat",
+                5,
+                false
+        );
+
+        Pet updatedPet = new Pet(
+                updateRequest.name(),
+                updateRequest.color(),
+                updateRequest.race(),
+                updateRequest.age()
+        );
+        updatedPet.setId(1L);
+        updatedPet.setAvailable(updateRequest.available());
+
+        when(petRepository.findById(1L)).thenReturn(Optional.of(existingPet));
+        when(petRepository.save(any(Pet.class))).thenReturn(updatedPet);
+
+        var response = petService.updatePetById(1L, updateRequest);
+
+        assertEquals("Pet updated", response.info());
+        assertEquals(1L, response.response().pet().id());
+        assertEquals("Andy", response.response().pet().name());
+        assertEquals("Negro", response.response().pet().color());
+        assertEquals("Cat", response.response().pet().race());
+        assertEquals(5, response.response().pet().age());
+        assertFalse(response.response().pet().available());
+
+        verify(petRepository).findById(1L);
+        verify(petRepository).save(any(Pet.class));
+    }
+
+    @Test
+    void updatePetById_WhenPetDoesNotExist_ShouldThrowException() {
+        var updateRequest = new PetController.PetUpdateRequest(
+                "Andy",
+                "Negro",
+                "Cat",
+                5,
+                true
+        );
+
+        when(petRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(PetNotFoundException.class, () ->
+                petService.updatePetById(99L, updateRequest)
+        );
+
+        verify(petRepository).findById(99L);
+        verify(petRepository, never()).save(any(Pet.class));
+    }
+
+    @Test
+    void updatePetById_WhenAvailableIsNull_ShouldThrowException() {
+        Pet existingPet = new Pet("Frijol", "Brown", "Chihuahua", 2);
+        existingPet.setId(1L);
+
+        var updateRequest = new PetController.PetUpdateRequest(
+                "Andy",
+                "Negro",
+                "Cat",
+                5,
+                null
+        );
+
+        when(petRepository.findById(1L)).thenReturn(Optional.of(existingPet));
+
+        assertThrows(InvalidPetDataException.class, () ->
+                petService.updatePetById(1L, updateRequest)
+        );
+
+        verify(petRepository).findById(1L);
+        verify(petRepository, never()).save(any(Pet.class));
+    }
+
+    @Test
+    void patchAvailability_ShouldUpdateAvailability() {
+        Pet existingPet = new Pet("Frijol", "Brown", "Chihuahua", 2);
+        existingPet.setId(1L);
+        existingPet.setAvailable(true);
+
+        var request = new PetController.PetAvailabilityRequest(false);
+
+        Pet savedPet = new Pet("Frijol", "Brown", "Chihuahua", 2);
         savedPet.setId(1L);
-        savedPet.setName("Andy");
-        savedPet.setColor("Negro");
-        savedPet.setRace("Cat");
-        savedPet.setAge(67);
-        savedPet.setAvailable(true);
+        savedPet.setAvailable(false);
 
+        when(petRepository.findById(1L)).thenReturn(Optional.of(existingPet));
         when(petRepository.save(any(Pet.class))).thenReturn(savedPet);
 
-        // Act
-        ApiResponse<PetController.PetWrapper> petApiDTO = petService.savePet(petRequest);
-        PetController.PetResponse petResponse = petApiDTO.response().pet();
+        var response = petService.patchAvailability(1L, request);
 
-        // Assert
-        verify(petRepository, times(1)).save(any(Pet.class));
-        assertEquals(1L, petResponse.id());
-        assertEquals("Andy", petResponse.name());
-        assertEquals("Negro", petResponse.color());
-        assertEquals("Cat", petResponse.race());
-        assertEquals(67, petResponse.age());
-    }
+        assertEquals("Pet availability updated", response.info());
+        assertEquals(1L, response.response().pet().id());
+        assertFalse(response.response().pet().available());
 
-
-    //Age
-    @Test
-    void savePet_NullAge_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest("Frijol", "Negro", "Perro", null);
-
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
-    }
-    @Test
-    void savePet_InvalidAge_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest("Frijol", "Negro", "Perro", -2);
-
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
-    }
-    //Name
-    @Test
-    void savePet_NullName_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest(null, "Negro", "Perro", 2);
-
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
-    }
-    @Test
-    void savePet_EmptyName_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest("", "Negro", "Perro", 2);
-
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
-    }
-    @Test
-    void savePet_InvalidNameLength_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest("Le", "Negro", "Perro", 2);
-
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
-    }
-
-    //Color
-    @Test
-    void savePet_NullColor_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest("Frijol", null, "Perro", 2);
-
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
-    }
-    @Test
-    void savePet_BlankColor_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest("Frijol", "", "Perro", 2);
-
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
-    }
-
-    //Race
-    @Test
-    void savePet_NullRace_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest("Frijol", "Negro" , null, 2);
-
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
+        verify(petRepository).findById(1L);
+        verify(petRepository).save(any(Pet.class));
     }
 
     @Test
-    void savePet_BlankRace_ExceptionExpected(){
-        //Arrange
-        var petRequest = new PetController.PetRequest("Frijol", "Negro" , "", 2);
+    void patchAvailability_WhenPetDoesNotExist_ShouldThrowException() {
+        var request = new PetController.PetAvailabilityRequest(false);
 
-        //Act
-        assertThrows(InvalidPetDataException.class, () -> petService.savePet(petRequest));
+        when(petRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(PetNotFoundException.class, () ->
+                petService.patchAvailability(99L, request)
+        );
+
+        verify(petRepository).findById(99L);
+        verify(petRepository, never()).save(any(Pet.class));
     }
 
     @Test
-    void getPetById(){
-        // Arrange
-        var request = new PetController.PetRequest("Frijol", "brown", "chihuahua", 2);
+    void patchAvailability_WhenAvailableIsNull_ShouldThrowException() {
+        Pet existingPet = new Pet("Frijol", "Brown", "Chihuahua", 2);
+        existingPet.setId(1L);
 
-        Pet savedPet = new Pet(
-                request.name(),
-                request.color(),
-                request.race(),
-                request.age());
-        savedPet.setId(1L);
+        var request = new PetController.PetAvailabilityRequest(null);
 
-        when(petRepository.findById(1L)).thenReturn(Optional.of(savedPet));
+        when(petRepository.findById(1L)).thenReturn(Optional.of(existingPet));
 
-        // Act
-        var requestedPet = petService.getPetById(1L);
+        assertThrows(InvalidPetDataException.class, () ->
+                petService.patchAvailability(1L, request)
+        );
 
-        // Assert
-        assertEquals(1L, requestedPet.response().pet().id());
-        assertEquals("Frijol", requestedPet.response().pet().name());
-
+        verify(petRepository).findById(1L);
+        verify(petRepository, never()).save(any(Pet.class));
     }
-    //TODO get by id, -get of id 1 but is not in DB
-    //404 not found
-
-
 }

@@ -1,5 +1,7 @@
 package mx.edu.cetys.Software_Quality_Lab.pets;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import mx.edu.cetys.Software_Quality_Lab.common.*;
@@ -37,8 +39,8 @@ public class PetController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    ApiResponse<List<PetWrapper>> getAllPets(){
-           return petService.getAllPets();
+    ApiResponse<Page<PetWrapper>> getPets(Pageable pageable) {
+           return petService.getPets(pageable);
        }
 
     @GetMapping("/{id}")

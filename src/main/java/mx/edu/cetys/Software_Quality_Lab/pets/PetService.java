@@ -2,8 +2,12 @@ package mx.edu.cetys.Software_Quality_Lab.pets;
 
 import mx.edu.cetys.Software_Quality_Lab.pets.exceptions.PetNotFoundException;
 import mx.edu.cetys.Software_Quality_Lab.common.*;
+import mx.edu.cetys.Software_Quality_Lab.users.User;
+import mx.edu.cetys.Software_Quality_Lab.users.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -40,17 +44,14 @@ public class PetService {
                 wrappedPet,
                 null);
     }
-    ApiResponse<List<PetController.PetWrapper>> getAllPets(){
-            var pets = petRepository.findAll();
+    ApiResponse<Page<PetController.PetWrapper>> getPets(Pageable pageable) {
+        Page<Pet> pets = petRepository.findAll(pageable);
 
-            var response = pets.stream()
-                    .map(this::mapToResponse
-                    ).toList();
+        Page<PetController.PetWrapper> wrappedResponse = pets.map(pet ->
+                new PetController.PetWrapper(mapToResponse(pet))
+        );
 
-            var wrappedResponse = response.stream()
-                    .map(PetController.PetWrapper::new).toList();
-
-            return new ApiResponse<>("Pet list", wrappedResponse, null);
+        return new ApiResponse<>("Pet list", wrappedResponse, null);
     }
 
     ApiResponse<PetController.PetWrapper> getPetById(@PathVariable Long id){
