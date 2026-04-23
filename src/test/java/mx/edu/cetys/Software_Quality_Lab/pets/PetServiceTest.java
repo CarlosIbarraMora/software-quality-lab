@@ -49,8 +49,8 @@ public class PetServiceTest {
         when(petRepository.save(any(Pet.class))).thenReturn(savedPet);
 
         // Act
-        ApiResponse<PetController.PetResponse> petApiDTO = petService.savePet(petRequest);
-        PetController.PetResponse petResponse = petApiDTO.response();
+        ApiResponse<PetController.PetWrapper> petApiDTO = petService.savePet(petRequest);
+        PetController.PetResponse petResponse = petApiDTO.response().pet();
 
         // Assert
         verify(petRepository, times(1)).save(any(Pet.class));

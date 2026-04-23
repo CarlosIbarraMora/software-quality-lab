@@ -22,7 +22,7 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-   ApiResponse<PetController.PetResponse> savePet(PetController.PetRequest requestPet){
+   ApiResponse<PetController.PetWrapper> savePet(PetController.PetRequest requestPet){
         logger.info("Saving Pet Request requestPet={}", requestPet);
 
         PetInfoValidator.isValid(requestPet);
@@ -34,10 +34,10 @@ public class PetService {
                         requestPet.age()));
 
         var responsePet = mapToResponse(savedPet);
-
+        var wrappedPet = new PetController.PetWrapper(responsePet);
         return new ApiResponse<>(
                 "Pet saved",
-                responsePet,
+                wrappedPet,
                 null);
     }
     ApiResponse<List<PetController.PetWrapper>> getAllPets(){

@@ -32,9 +32,7 @@ public class PetController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     ApiResponse<PetWrapper> createPet(@RequestBody PetController.PetRequest requestPet){
-        return new ApiResponse<>("pet saved",
-                new PetWrapper(petService.savePet(requestPet).response()),
-                null );
+        return petService.savePet(requestPet);
     }
 
     @GetMapping

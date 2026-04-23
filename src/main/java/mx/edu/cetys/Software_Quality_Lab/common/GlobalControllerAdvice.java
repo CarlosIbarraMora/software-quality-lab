@@ -10,24 +10,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
-    @ExceptionHandler
+    @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<Void> handleAllBadRequest(Exception ex) {
-        return switch(ex){
-            case HttpMessageNotReadableException e ->
-                new ApiResponse<>("Bad request", null, e.getMessage());
-            default ->
-                new ApiResponse<>("Bad request", null, ex.getMessage());
-        };
+    public ApiResponse<Void> handleBadRequest(HttpMessageNotReadableException ex) {
+        return new ApiResponse<>("Bad request", null, ex.getMessage());
     }
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiResponse<Void> handleAllNotFound(Exception ex) {
-        return switch(ex){
-            case HttpMessageNotReadableException e ->
-                    new ApiResponse<>("Not found", null, e.getMessage());
-            default ->
-                    new ApiResponse<>("Not found", null, ex.getMessage());
-        };
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiResponse<Void> handleGeneric(Exception ex) {
+        return new ApiResponse<>("Internal server error", null, ex.getMessage());
     }
 }
