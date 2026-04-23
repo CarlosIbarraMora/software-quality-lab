@@ -1,8 +1,6 @@
 package mx.edu.cetys.Software_Quality_Lab.users;
 
-import mx.edu.cetys.Software_Quality_Lab.pets.Pet;
-import mx.edu.cetys.Software_Quality_Lab.pets.PetController;
-import mx.edu.cetys.Software_Quality_Lab.pets.exceptions.invalidPetDataException;
+import mx.edu.cetys.Software_Quality_Lab.users.exceptions.InvalidUserDataException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -58,9 +56,73 @@ public class UserServiceTest {
     @Test
     void saveUser_InvalidName_ExceptionExpected(){
         //Arrange
-        //var petRequest = new PetController.PetRequest("L", "Negro", "Perro", 2);
+        var userRequest = new UserController.UserRequest(
+                "An",
+                "Roblox123",
+                "roblox@gmail.com",
+                "Andres",
+                "Silva"
+        );
 
         //Act
-        //assertThrows(invalidPetDataException.class, () -> petService.savePet(petRequest));
+        assertThrows(InvalidUserDataException.class, () -> userService.saveUser(userRequest));
     }
+    //Invalid password because empty
+    @Test
+    void saveUser_InvalidPassword_ExceptionExpected() {
+        //Arrange
+        var userRequest = new UserController.UserRequest(
+                "AndyPro",
+                "",
+                "roblox@gmail.com",
+                "Andres",
+                "Silva"
+        );
+        //Act
+        assertThrows(InvalidUserDataException.class, () -> userService.saveUser(userRequest));
+    }
+
+    //Invalid email format
+    @Test
+    void saveUser_InvalidEmailFormat_ExceptionExpected() {
+        //Arrange
+        var userRequest = new UserController.UserRequest(
+                "AndyPro",
+                "Roblox67",
+                "robloxgmailcom",
+                "Andres",
+                "Silva"
+        );
+        //Act
+        assertThrows(InvalidUserDataException.class, () -> userService.saveUser(userRequest));
+    }
+    //Invalid email
+    @Test
+    void saveUser_BlankEmail_ExceptionExpected() {
+        //Arrange
+        var userRequest = new UserController.UserRequest(
+                "AndyPro",
+                "Roblox67",
+                "",
+                "Andres",
+                "Silva"
+        );
+        //Act
+        assertThrows(InvalidUserDataException.class, () -> userService.saveUser(userRequest));
+    }
+    //Invalid email
+    @Test
+    void saveUser_NullEmail_ExceptionExpected() {
+        //Arrange
+        var userRequest = new UserController.UserRequest(
+                "AndyPro",
+                "Roblox67",
+                null,
+                "Andres",
+                "Silva"
+        );
+        //Act
+        assertThrows(InvalidUserDataException.class, () -> userService.saveUser(userRequest));
+    }
+
 }

@@ -1,0 +1,33 @@
+package mx.edu.cetys.Software_Quality_Lab.common;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalControllerAdvice {
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Void> handleAllBadRequest(Exception ex) {
+        return switch(ex){
+            case HttpMessageNotReadableException e ->
+                new ApiResponse<>("Bad request", null, e.getMessage());
+            default ->
+                new ApiResponse<>("Bad request", null, ex.getMessage());
+        };
+    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse<Void> handleAllNotFound(Exception ex) {
+        return switch(ex){
+            case HttpMessageNotReadableException e ->
+                    new ApiResponse<>("Not found", null, e.getMessage());
+            default ->
+                    new ApiResponse<>("Not found", null, ex.getMessage());
+        };
+    }
+}

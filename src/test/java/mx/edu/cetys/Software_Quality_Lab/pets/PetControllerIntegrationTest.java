@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
+//todo fix
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class PetControllerIntegrationTest {
@@ -29,43 +31,27 @@ public class PetControllerIntegrationTest {
 
     @Test
     void shouldCreatePetAndReturn201() throws Exception {
-        //Arrange
-        String requestBody =
-                """
-                {
-                    "name": "pop",
-                    "race": "Dalmate",
-                    "color": "Blanco y negro",
-                    "age": 1
-                }
-                """;
+        String requestBody = """
+            {
+                "name": "pop",
+                "race": "Dalmate",
+                "color": "Blanco y negro",
+                "age": 1
+            }
+            """;
 
         mockMvc.perform(
-                //Act
                         post("/pets")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody)
                 )
-                //Assert
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.info")
-                        .value("Pet saved"))
-                .andExpect(jsonPath("$.response.id").
-                        value(1)
-                )
-                .andExpect(jsonPath("$.response.name").
-                        value("pop")
-                )
-                .andExpect(jsonPath("$.response.race").
-                        value("Dalmate")
-                )
-                .andExpect(jsonPath("$.response.color").
-                        value("Blanco y negro")
-                )
-                .andExpect(jsonPath("$.response.age").
-                        value(1)
-                )
-        ;
+                .andExpect(jsonPath("$.info").value("Pet saved"))
+                .andExpect(jsonPath("$.response.pet.id").isNumber())
+                .andExpect(jsonPath("$.response.pet.name").value("pop"))
+                .andExpect(jsonPath("$.response.pet.race").value("Dalmate"))
+                .andExpect(jsonPath("$.response.pet.color").value("Blanco y negro"))
+                .andExpect(jsonPath("$.response.pet.age").value(1));
 
     }
     //TODO integration test for 404 like .andExpect(status().isCreated())

@@ -1,25 +1,25 @@
 package mx.edu.cetys.Software_Quality_Lab.pets;
 
-import mx.edu.cetys.Software_Quality_Lab.pets.exceptions.invalidPetDataException;
+import mx.edu.cetys.Software_Quality_Lab.pets.exceptions.InvalidPetDataException;
 
 public class PetInfoValidator {
     public static void isValid(PetController.PetRequest requestPet) {
         //Age > 0
         if(requestPet.age() == null ||requestPet.age() <= 0){
-            throw new invalidPetDataException("Invalid age");
+            throw new InvalidPetDataException("Invalid age");
         }
         //Name length > 2
         if(requestPet.name() == null
                 || requestPet.name().isBlank()
                 || requestPet.name().length() <= 2){
-            throw new invalidPetDataException("Name must be greater than or equal to 2");
+            throw new InvalidPetDataException("Name must be greater than or equal to 2");
         }
         //color not null
         if(requestPet.color() == null || requestPet.color().isBlank()){
-            throw new invalidPetDataException("Invalid color");
+            throw new InvalidPetDataException("Invalid color");
         }
         if(requestPet.race() == null || requestPet.race().isBlank()){
-            throw new invalidPetDataException("Invalid race");
+            throw new InvalidPetDataException("Invalid race");
         }
     }
 
@@ -34,12 +34,12 @@ public class PetInfoValidator {
         isValid(petRequest);
 
         if (requestUpdate.available() == null) {
-            throw new invalidPetDataException("Available is required");
+            throw new InvalidPetDataException("Available is required");
         }
     }
     public static void validateAvailability(PetController.PetAvailabilityRequest request) {
         if (request.available() == null) {
-            throw new invalidPetDataException("Available is required");
+            throw new InvalidPetDataException("Available is required");
         }
     }
 }

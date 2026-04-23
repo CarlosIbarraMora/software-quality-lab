@@ -1,6 +1,6 @@
 package mx.edu.cetys.Software_Quality_Lab.pets;
 
-import mx.edu.cetys.Software_Quality_Lab.pets.exceptions.petNotFoundException;
+import mx.edu.cetys.Software_Quality_Lab.pets.exceptions.PetNotFoundException;
 import mx.edu.cetys.Software_Quality_Lab.common.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,14 +33,7 @@ public class PetService {
                         requestPet.race(),
                         requestPet.age()));
 
-        var responsePet = new PetController.PetResponse(
-                savedPet.getId(),
-                savedPet.getName(),
-                savedPet.getColor(),
-                savedPet.getRace(),
-                savedPet.getAge(),
-                true
-                );
+        var responsePet = mapToResponse(savedPet);
 
         return new ApiResponse<>(
                 "Pet saved",
@@ -62,14 +55,14 @@ public class PetService {
 
     ApiResponse<PetController.PetWrapper> getPetById(@PathVariable Long id){
         var pet = petRepository.findById(id)
-                               .orElseThrow(() -> new petNotFoundException("Pet was not found"));
+                               .orElseThrow(() -> new PetNotFoundException("Pet was not found"));
 
         return new ApiResponse<>("Pet info: ", new PetController.PetWrapper(mapToResponse(pet)), null);
     }
 
     ApiResponse<PetController.PetWrapper> updatePetById(@PathVariable Long id, PetController.PetUpdateRequest requestPet){
         var pet = petRepository.findById(id)
-                .orElseThrow(() -> new petNotFoundException("Pet was not found"));
+                .orElseThrow(() -> new PetNotFoundException("Pet was not found"));
 
         PetInfoValidator.validateUpdate(requestPet);
 
@@ -89,7 +82,7 @@ public class PetService {
     }
     ApiResponse<PetController.PetWrapper> patchAvailability(Long id, PetController.PetAvailabilityRequest request) {
         var pet = petRepository.findById(id)
-                .orElseThrow(() -> new petNotFoundException("Pet with id=" + id + " was not found"));
+                .orElseThrow(() -> new PetNotFoundException("Pet with id=" + id + " was not found"));
 
         PetInfoValidator.validateAvailability(request);
 
