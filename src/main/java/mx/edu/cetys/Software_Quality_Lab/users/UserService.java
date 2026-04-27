@@ -145,9 +145,9 @@ public class UserService {
         return new UserController.UserResponse(
                 user.getId(),
                 user.getUsername(),
-                user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
+                user.getEmail(),
                 user.getActive()
         );
     }
